@@ -1,5 +1,11 @@
+import { FlowCanvas } from './components';
+
 function App() {
-  return <></>;
+  return (
+    <div className="app">
+      <FlowCanvas />
+    </div>
+  );
 }
 
 export default App;

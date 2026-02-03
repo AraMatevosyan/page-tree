@@ -1,0 +1,48 @@
+.page {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.pageBody {
+  background-color: #fff;
+  border: 2px solid #000;
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  width: 152px;
+  z-index: 25;
+  margin: 0 10px;
+}
+
+%childConnectorBase {
+  display: flex;
+  height: 30px;
+  margin-top: -2px;
+  width: 100%;
+
+  > div {
+    flex: 1 1;
+  }
+}
+
+.leftChild {
+  @extend %childConnectorBase;
+
+  > div:last-child {
+    border-left: 2px solid #000;
+    border-top: 2px solid #000;
+    border-top-left-radius: 8px;
+  }
+}
+
+.rightChild {
+  @extend %childConnectorBase;
+
+  > div:first-child {
+    border-right: 2px solid #000;
+    border-top: 2px solid #000;
+    border-top-right-radius: 8px;
+  }
+}
+
