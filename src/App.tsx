@@ -1,10 +1,15 @@
+import { Provider } from 'react-redux';
+
 import { FlowCanvas } from './components';
+import { store } from './store/store';
 
 function App() {
   return (
-    <div className="app">
-      <FlowCanvas />
-    </div>
+    <Provider store={store}>
+      <div className="app">
+        <FlowCanvas />
+      </div>
+    </Provider>
   );
 }
 
