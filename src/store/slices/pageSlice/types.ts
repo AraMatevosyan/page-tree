@@ -8,12 +8,14 @@ export type PageStateNode = {
   children: PageStateNode[];
 };
 
+type DndState = {
+  fromPath: string[];
+  blockId: string;
+};
+
 export type PagesState = {
-  activePath: number[];
+  activePath: string[];
   root: PageStateNode;
 
-  dnd?: {
-    fromPath: number[];
-    fromBlockIndex: number;
-  };
+  dnd?: DndState;
 };
