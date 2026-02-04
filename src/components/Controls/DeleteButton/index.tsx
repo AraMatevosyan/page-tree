@@ -5,16 +5,19 @@ import styles from './styles.module.scss';
 import { BaseButton } from '../../Common';
 
 type Props = {
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  className?: string;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  withBorder?: boolean;
 };
 
-export function AddButton({ className, ...props }: Props) {
+export function DeleteButton({ withBorder = true, ...props }: Props) {
   return (
-    <BaseButton className={clsx(styles.btn, className)} {...props}>
+    <BaseButton
+      className={clsx(styles.btn, { [styles.border]: withBorder })}
+      {...props}
+    >
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path
-          d="M12 5v14M5 12h14"
+          d="M6 6l12 12M18 6L6 18"
           fill="none"
           stroke="currentColor"
           strokeWidth="3"

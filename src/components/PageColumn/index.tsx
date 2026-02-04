@@ -1,24 +1,30 @@
 import clsx from 'clsx';
+import { useState } from 'react';
 
 import { Page } from '../Page';
+import { ChildrenConnector } from './components';
 import styles from './styles.module.scss';
-import { getChildMeta } from './utils.ts';
-import { type PageNode, type Side } from '../../types.ts';
+import { getChildMeta, getRowClassName } from './utils.ts';
+import { type Side } from '../../types.ts';
+
+import type { PageStateNode } from '../../store/slices/pageSlice/types.ts';
 
 type Props = {
-  node: PageNode;
+  node: PageStateNode;
   side?: Side;
   layoutClassName?: string;
+  isSingle?: boolean;
 };
 
-export function PageColumn({ node, side, layoutClassName }: Props) {
+export function PageColumn({ node, side, layoutClassName, isSingle }: Props) {
+  const [isChildrenVisible, setIsChildrenVisible] = useState(true);
   const children = node.children ?? [];
-  const rowClassName =
-    side === 'left'
-      ? styles.rowLeftChild
-      : side === 'right'
-        ? styles.rowRightChild
-        : null;
+  const hasChildren = children.length > 0;
+  const rowClassName = getRowClassName(isSingle, side);
+
+  const toggleChildrenVisibility = () => {
+    setIsChildrenVisible(!isChildrenVisible);
+  };
 
   return (
     <div
@@ -28,18 +34,23 @@ export function PageColumn({ node, side, layoutClassName }: Props) {
       )}
     >
       {rowClassName && (
-        <div className={rowClassName}>
+        <div className={styles[rowClassName]}>
           <div />
           <div />
         </div>
       )}
-      <Page title={node.title} side={side} />
-      {!!children.length && (
+      <Page
+        title={node.title}
+        side={side}
+        hasChildren={hasChildren}
+        isSingle={isSingle}
+        isChildrenVisible={isChildrenVisible}
+        toggleChildrenVisibility={toggleChildrenVisibility}
+        isEdgeChild={false}
+      />
+      {!!children.length && isChildrenVisible && (
         <>
-          <div className={styles.manyChild}>
-            <div />
-            {children[1] && <div />}
-          </div>
+          <ChildrenConnector isManyChild={children.length > 0} />
           <div className={styles.pageSubpage}>
             {children.map((child, idx) => {
               const meta = getChildMeta(idx, children.length);
@@ -50,6 +61,7 @@ export function PageColumn({ node, side, layoutClassName }: Props) {
                   node={child}
                   side={meta.side}
                   layoutClassName={meta.layoutClassName}
+                  isSingle={meta.isSingle}
                 />
               );
             })}

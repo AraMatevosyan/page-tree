@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import pagesReducer from './slices/pagesSlice.ts';
+import pagesReducer from './slices/pageSlice';
 
 export const store = configureStore({
   reducer: { pages: pagesReducer },

@@ -1,0 +1,21 @@
+.btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  color: #FF3737;
+
+  >svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background-color: #FF3737;
+    color: #fff;
+  }
+}
+
+.border {
+  border: 2px solid #000;
+}

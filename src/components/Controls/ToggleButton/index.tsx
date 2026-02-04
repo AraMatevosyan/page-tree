@@ -6,15 +6,22 @@ import { BaseButton } from '../../Common';
 
 type Props = {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  isClosed?: boolean;
   className?: string;
 };
 
-export function AddButton({ className, ...props }: Props) {
+export function ToggleButton({ isClosed, className, ...props }: Props) {
+  const rotate = isClosed ? 180 : 0;
+
   return (
     <BaseButton className={clsx(styles.btn, className)} {...props}>
-      <svg viewBox="0 0 24 24" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        style={{ transform: `rotate(${rotate}deg)` }}
+      >
         <path
-          d="M12 5v14M5 12h14"
+          d="M6 9l6 6 6-6"
           fill="none"
           stroke="currentColor"
           strokeWidth="3"
