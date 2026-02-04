@@ -7,9 +7,18 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string;
 };
 
-export function BaseButton({ className, children, ...props }: Props) {
+export function BaseButton({ className, onClick, children, ...props }: Props) {
+  const handleClick: React.MouseEventHandler<HTMLButtonElement> = e => {
+    e.stopPropagation();
+    onClick?.(e);
+  };
   return (
-    <button type="button" className={clsx(styles.btn, className)} {...props}>
+    <button
+      type="button"
+      className={clsx(styles.btn, className)}
+      onClick={handleClick}
+      {...props}
+    >
       {children}
     </button>
   );

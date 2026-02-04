@@ -7,11 +7,14 @@ import styles from './styles.module.scss';
 import { getChildClassName } from './utils.ts';
 import {
   addBlock,
+  addChildPage,
+  changePageName,
+  deletePage,
   dropBlock,
   setActivePath,
 } from '../../store/slices/pageSlice';
 import { AddButton, AddElementButton, ToggleButton } from '../Controls';
-import { Block } from './components';
+import { Block, FoldedChildrenImitation, TitleInput } from './components';
 import { DeleteButton } from '../Controls/DeleteButton';
 
 import type { PageBlock } from '../../store/slices/pageSlice/types.ts';
@@ -97,7 +100,10 @@ export function Page({
         onBlur={deactivate}
         className={clsx(styles.pageBody, { [styles.active]: isActive })}
       >
-        {title}
+        <TitleInput
+          value={title}
+          onChange={value => dispatch(changePageName({ path, title: value }))}
+        />
         <div className={styles.blocks}>
           {pageBlocks.map(block => (
             <Block path={path} key={block.id} block={block} active={isActive} />
@@ -107,7 +113,9 @@ export function Page({
           )}
         </div>
         <div className={styles.actions}>
-          {showAddButton && <AddButton onClick={() => null} />}
+          {showAddButton && (
+            <AddButton onClick={() => dispatch(addChildPage({ path }))} />
+          )}
           {showToggleButton && (
             <ToggleButton
               isClosed={isChildrenVisible}
@@ -117,16 +125,12 @@ export function Page({
         </div>
         {showRemoveButton && (
           <div className={styles.remove}>
-            <DeleteButton onClick={() => null} />
+            <DeleteButton onClick={() => dispatch(deletePage({ path }))} />
           </div>
         )}
       </div>
-      {!isChildrenVisible && (
-        <>
-          <div className={clsx(styles.shadow, styles.shadowFirst)} />
-          <div className={clsx(styles.shadow, styles.shadowSecond)} />
-        </>
-      )}
+
+      <FoldedChildrenImitation visible={!isChildrenVisible} />
     </div>
   );
 }

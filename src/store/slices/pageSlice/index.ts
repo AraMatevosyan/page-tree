@@ -1,12 +1,41 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import { initialState } from './initialState.ts';
-import { createId, getNodeByPath } from './utils.ts';
+import { createId, getNodeByPath, getParentByPath } from './utils.ts';
 
 export const pagesSlice = createSlice({
   name: 'pages',
   initialState: initialState,
   reducers: {
+    addChildPage(state, action: PayloadAction<{ path: string[] }>) {
+      const parent = getNodeByPath(state.root, action.payload.path);
+      parent.children.push({
+        id: createId(),
+        title: 'New Page',
+        pageBlocks: [],
+        children: [],
+      });
+    },
+
+    deletePage(state, action: PayloadAction<{ path: string[] }>) {
+      const { parent, childId } = getParentByPath(
+        state.root,
+        action.payload.path
+      );
+
+      if (!childId) return;
+
+      parent.children = parent.children.filter(child => child.id !== childId);
+    },
+
+    changePageName(
+      state,
+      action: PayloadAction<{ path: string[]; title: string }>
+    ) {
+      const node = getNodeByPath(state.root, action.payload.path);
+      node.title = action.payload.title;
+    },
+
     setActivePath(state, action: PayloadAction<string[]>) {
       state.activePath = action.payload;
     },
@@ -128,6 +157,9 @@ export const pagesSlice = createSlice({
 });
 
 export const {
+  addChildPage,
+  deletePage,
+  changePageName,
   addBlock,
   deleteBlock,
   changeBlockTitle,

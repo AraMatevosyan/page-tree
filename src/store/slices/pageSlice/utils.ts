@@ -24,10 +24,14 @@ export function getNodeByPath(
 export function getParentByPath(
   root: PageStateNode,
   path: string[]
-): { parent: PageStateNode; index: number } {
-  if (path.length === 0) return { parent: root, index: -1 };
-  const index = path[path.length - 1];
+): { parent: PageStateNode; childId: string | null } {
+  if (path.length === 0) {
+    return { parent: root, childId: null };
+  }
+
+  const childId = path[path.length - 1];
   const parentPath = path.slice(0, -1);
   const parent = getNodeByPath(root, parentPath);
-  return { parent, index };
+
+  return { parent, childId };
 }

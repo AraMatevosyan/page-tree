@@ -7,27 +7,23 @@ export const initialState: PagesState = {
   root: {
     title: 'Main',
     id: createId(),
-    showSubPages: true,
     pageBlocks: [],
     children: [
       {
         title: 'Page',
         id: createId(),
-        showSubPages: true,
         pageBlocks: [{ title: 'Block', id: createId() }],
         children: [],
       },
       {
         title: 'Page',
         id: createId(),
-        showSubPages: true,
         pageBlocks: [],
         children: [],
       },
       {
         title: 'Page',
         id: createId(),
-        showSubPages: true,
         pageBlocks: [
           { title: 'Block 1', id: createId() },
           { title: 'Block 2', id: createId() },
@@ -38,13 +34,11 @@ export const initialState: PagesState = {
       {
         title: 'Page',
         id: createId(),
-        showSubPages: true,
         pageBlocks: [],
         children: [
           {
             title: 'Page',
             id: createId(),
-            showSubPages: true,
             pageBlocks: [],
             children: [],
           },

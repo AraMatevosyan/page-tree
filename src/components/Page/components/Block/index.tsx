@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import styles from './styles.module.scss';
@@ -9,6 +8,7 @@ import {
 } from '../../../../store/slices/pageSlice';
 import { DeleteButton } from '../../../Controls/DeleteButton';
 import { useBlockDnd } from '../../hooks/useBlockDnd.tsx';
+import { TitleInput } from '../TitleInput';
 
 import type { PageBlock } from '../../../../store/slices/pageSlice/types.ts';
 
@@ -20,18 +20,9 @@ type Props = {
 
 export function Block({ block, path, active = false }: Props) {
   const { id, title } = block;
-  const [isEditing, setEditing] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch();
 
   const { isDragging, isOver, dndProps } = useBlockDnd(path, id);
-
-  useEffect(() => {
-    if (isEditing) {
-      inputRef.current?.focus();
-      inputRef.current?.select();
-    }
-  }, [isEditing]);
 
   return (
     <div
@@ -44,21 +35,11 @@ export function Block({ block, path, active = false }: Props) {
         isDragging && styles.dragging
       )}
     >
-      <input
-        ref={inputRef}
-        className={styles.input}
+      <TitleInput
         value={title}
-        readOnly={!isEditing}
-        onClick={() => setEditing(true)}
-        onChange={e =>
-          dispatch(
-            changeBlockTitle({ path, blockId: id, title: e.target.value })
-          )
+        onChange={value =>
+          dispatch(changeBlockTitle({ path, blockId: id, title: value }))
         }
-        onBlur={() => setEditing(false)}
-        onKeyDown={e => e.key === 'Enter' && setEditing(false)}
-        onMouseDown={e => e.stopPropagation()}
-        onDragStart={e => e.preventDefault()}
       />
 
       {active && (
