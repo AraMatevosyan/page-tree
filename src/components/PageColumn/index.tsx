@@ -14,6 +14,7 @@ type Props = {
   side?: Side;
   layoutClassName?: string;
   isSingle?: boolean;
+  isEdgeChild?: boolean;
   path?: string[];
 };
 
@@ -23,6 +24,7 @@ export function PageColumn({
   side,
   layoutClassName,
   isSingle,
+  isEdgeChild,
 }: Props) {
   const [isChildrenVisible, setIsChildrenVisible] = useState(true);
   const children = node.children ?? [];
@@ -54,7 +56,7 @@ export function PageColumn({
         isChildrenVisible={isChildrenVisible}
         toggleChildrenVisibility={toggleChildrenVisibility}
         pageBlocks={node.pageBlocks}
-        isEdgeChild={false}
+        isEdgeChild={isEdgeChild}
         path={path}
       />
       {!!children.length && isChildrenVisible && (
@@ -71,6 +73,7 @@ export function PageColumn({
                   side={meta.side}
                   layoutClassName={meta.layoutClassName}
                   isSingle={meta.isSingle}
+                  isEdgeChild={meta.isEdgeChild}
                   path={[...path, child.id]}
                 />
               );

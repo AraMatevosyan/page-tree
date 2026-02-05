@@ -4,6 +4,9 @@ export function getChildClassName(
   isSingle?: boolean,
   side?: Side
 ): string | null {
+  if (isSingle) {
+    return 'centerChild';
+  }
   if (!isSingle && side === 'left') {
     return 'leftChild';
   }

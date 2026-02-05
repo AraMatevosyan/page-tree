@@ -8,6 +8,7 @@ import { getChildClassName } from './utils.ts';
 import {
   addBlock,
   addChildPage,
+  addSiblingPage,
   changePageName,
   deletePage,
   dropBlock,
@@ -27,7 +28,7 @@ type Props = {
   hasChildren: boolean;
   toggleChildrenVisibility: () => void;
   isChildrenVisible: boolean;
-  isEdgeChild: boolean;
+  isEdgeChild?: boolean;
   pageBlocks: PageBlock[];
   path: string[];
 };
@@ -41,6 +42,7 @@ export function Page({
   isChildrenVisible,
   pageBlocks,
   path,
+  isEdgeChild,
 }: Props) {
   const dispatch = useDispatch();
 
@@ -50,9 +52,11 @@ export function Page({
   const childClassName = getChildClassName(isSingle, side);
 
   const showAddButton = !hasChildren && isHover;
+  const showAddSiblingButton = isHover && (isEdgeChild || isSingle);
   const showToggleButton = hasChildren && isHover;
   const showRemoveButton = isActive;
   const showAddElementButton = isActive;
+  const isRootPage = !path.length;
 
   const activate = () => {
     dispatch(setActivePath(path));
@@ -91,6 +95,12 @@ export function Page({
         <div className={styles[childClassName]}>
           <div />
           <div />
+          {showAddSiblingButton && (
+            <AddButton
+              className={styles.addButton}
+              onClick={() => dispatch(addSiblingPage({ path }))}
+            />
+          )}
         </div>
       )}
       <div
@@ -103,6 +113,7 @@ export function Page({
         <TitleInput
           value={title}
           onChange={value => dispatch(changePageName({ path, title: value }))}
+          disabled={isRootPage}
         />
         <div className={styles.blocks}>
           {pageBlocks.map(block => (

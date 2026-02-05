@@ -5,9 +5,10 @@ import styles from './styles.module.scss';
 type Props = {
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 };
 
-export function TitleInput({ value, onChange }: Props) {
+export function TitleInput({ value, onChange, disabled }: Props) {
   const [isEditing, setEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -32,6 +33,7 @@ export function TitleInput({ value, onChange }: Props) {
       }}
       onMouseDown={e => e.stopPropagation()}
       onDragStart={e => e.preventDefault()}
+      disabled={disabled}
     />
   );
 }

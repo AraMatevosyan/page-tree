@@ -17,6 +17,21 @@ export const pagesSlice = createSlice({
       });
     },
 
+    addSiblingPage(state, action: PayloadAction<{ path: string[] }>) {
+      if (action.payload.path.length === 0) return;
+
+      // path to the parent (without the current id)
+      const parentPath = action.payload.path.slice(0, -1);
+      const parent = getNodeByPath(state.root, parentPath);
+
+      parent.children.push({
+        id: createId(),
+        title: 'New Page',
+        pageBlocks: [],
+        children: [],
+      });
+    },
+
     deletePage(state, action: PayloadAction<{ path: string[] }>) {
       const { parent, childId } = getParentByPath(
         state.root,
@@ -158,6 +173,7 @@ export const pagesSlice = createSlice({
 
 export const {
   addChildPage,
+  addSiblingPage,
   deletePage,
   changePageName,
   addBlock,

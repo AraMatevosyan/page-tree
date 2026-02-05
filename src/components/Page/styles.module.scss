@@ -29,16 +29,24 @@
   height: 30px;
   margin-top: -2px;
   width: 100%;
+  position: relative;
 
   > div {
     flex: 1 1;
+  }
+
+  .addButton {
+    position: absolute;
+    top: -12px;
+    left: 74px;
+    z-index: 30;
   }
 }
 
 .leftChild {
   @extend %childConnectorBase;
 
-  > div:last-child {
+  > div:nth-child(2) {
     border-left: 2px solid #000;
     border-top: 2px solid #000;
     border-top-left-radius: 8px;
@@ -55,11 +63,19 @@
   }
 }
 
+.centerChild {
+  @extend %childConnectorBase;
+
+  > div:first-child {
+    border-right: 1px solid #000;
+  }
+}
+
 .actions {
   position: absolute;
   z-index: 30;
   bottom: -12px;
-  left: 64px;
+  left: 62px;
 }
 
 .shadow {
