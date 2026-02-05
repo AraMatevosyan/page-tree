@@ -12,7 +12,6 @@ import {
   changePageName,
   deletePage,
   dropBlock,
-  setActivePath,
 } from '../../store/slices/pageSlice';
 import { AddButton, AddElementButton, ToggleButton } from '../Controls';
 import { Block, FoldedChildrenImitation, TitleInput } from './components';
@@ -51,22 +50,22 @@ export function Page({
 
   const childClassName = getChildClassName(isSingle, side);
 
-  const showAddButton = !hasChildren && isHover;
+  const showActionsBlock = isHover;
+  const showAddButton = !hasChildren;
+  const showToggleButton = hasChildren;
   const showAddSiblingButton = isHover && (isEdgeChild || isSingle);
-  const showToggleButton = hasChildren && isHover;
   const showRemoveButton = isActive;
   const showAddElementButton = isActive;
   const isRootPage = !path.length;
 
   const activate = () => {
-    dispatch(setActivePath(path));
+    if (isRootPage) return;
     setActive(true);
   };
 
   const deactivate: React.FocusEventHandler<HTMLDivElement> = e => {
     const next = e.relatedTarget as Node | null;
     if (!next || !e.currentTarget.contains(next)) {
-      dispatch(setActivePath([]));
       setActive(false);
     }
   };
@@ -79,11 +78,12 @@ export function Page({
 
     const onDrop: React.DragEventHandler<HTMLDivElement> = e => {
       e.preventDefault();
+      if (isRootPage) return;
       dispatch(dropBlock({ toPath: path }));
     };
 
     return { onDragOver, onDrop };
-  }, [dispatch, path]);
+  }, [dispatch, path, isRootPage]);
 
   return (
     <div
@@ -123,17 +123,19 @@ export function Page({
             <AddElementButton onClick={() => dispatch(addBlock({ path }))} />
           )}
         </div>
-        <div className={styles.actions}>
-          {showAddButton && (
-            <AddButton onClick={() => dispatch(addChildPage({ path }))} />
-          )}
-          {showToggleButton && (
-            <ToggleButton
-              isClosed={isChildrenVisible}
-              onClick={toggleChildrenVisibility}
-            />
-          )}
-        </div>
+        {showActionsBlock && (
+          <div className={styles.actions}>
+            {showAddButton && (
+              <AddButton onClick={() => dispatch(addChildPage({ path }))} />
+            )}
+            {showToggleButton && (
+              <ToggleButton
+                isClosed={isChildrenVisible}
+                onClick={toggleChildrenVisibility}
+              />
+            )}
+          </div>
+        )}
         {showRemoveButton && (
           <div className={styles.remove}>
             <DeleteButton onClick={() => dispatch(deletePage({ path }))} />

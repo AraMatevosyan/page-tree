@@ -5,16 +5,12 @@ export const createId = () => crypto.randomUUID();
 export function getNodeByPath(
   root: PageStateNode,
   path: string[]
-): PageStateNode {
+): PageStateNode | undefined {
   let current: PageStateNode = root;
 
   for (const id of path) {
     const next = current.children.find(child => child.id === id);
-
-    if (!next) {
-      throw new Error(`Node with id "${id}" not found`);
-    }
-
+    if (!next) return undefined;
     current = next;
   }
 
@@ -24,7 +20,7 @@ export function getNodeByPath(
 export function getParentByPath(
   root: PageStateNode,
   path: string[]
-): { parent: PageStateNode; childId: string | null } {
+): { parent?: PageStateNode; childId: string | null } {
   if (path.length === 0) {
     return { parent: root, childId: null };
   }

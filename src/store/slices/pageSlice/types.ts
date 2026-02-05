@@ -13,8 +13,6 @@ type DndState = {
 };
 
 export type PagesState = {
-  activePath: string[];
   root: PageStateNode;
-
   dnd?: DndState;
 };

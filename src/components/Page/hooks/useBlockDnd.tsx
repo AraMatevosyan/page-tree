@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { dragStartBlock, dropBlock } from '../../../store/slices/pageSlice';
+import {
+  dragEndBlock,
+  dragStartBlock,
+  dropBlock,
+} from '../../../store/slices/pageSlice';
+import { DND_BLOCK_MIME } from '../../../types.ts';
 
 export function useBlockDnd(path: string[], blockId: string) {
   const dispatch = useDispatch();
@@ -10,6 +15,9 @@ export function useBlockDnd(path: string[], blockId: string) {
   const [isOver, setOver] = useState(false);
 
   const onDragStart: React.DragEventHandler<HTMLDivElement> = e => {
+    const payload = JSON.stringify({ blockId, fromPath: path });
+
+    e.dataTransfer.setData(DND_BLOCK_MIME, payload);
     e.dataTransfer.setData('text/plain', blockId);
     e.dataTransfer.effectAllowed = 'move';
 
@@ -22,6 +30,8 @@ export function useBlockDnd(path: string[], blockId: string) {
     e.currentTarget.style.opacity = '';
     setDragging(false);
     setOver(false);
+
+    dispatch(dragEndBlock());
   };
 
   const onDragEnter: React.DragEventHandler<HTMLDivElement> = e => {
@@ -37,12 +47,15 @@ export function useBlockDnd(path: string[], blockId: string) {
   };
 
   const onDragOver: React.DragEventHandler<HTMLDivElement> = e => {
+    if (!e.dataTransfer.types.includes(DND_BLOCK_MIME)) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   };
 
   const onDrop: React.DragEventHandler<HTMLDivElement> = e => {
     e.preventDefault();
+    if (!e.dataTransfer.types.includes(DND_BLOCK_MIME)) return;
+
     setOver(false);
     dispatch(dropBlock({ toPath: path, afterBlockId: blockId }));
   };

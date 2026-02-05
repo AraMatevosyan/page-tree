@@ -3,18 +3,21 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { initialState } from './initialState.ts';
 import { createId, getNodeByPath, getParentByPath } from './utils.ts';
 
+const createPage = () => ({
+  id: createId(),
+  title: 'New Page',
+  pageBlocks: [],
+  children: [],
+});
+
 export const pagesSlice = createSlice({
   name: 'pages',
   initialState: initialState,
   reducers: {
     addChildPage(state, action: PayloadAction<{ path: string[] }>) {
       const parent = getNodeByPath(state.root, action.payload.path);
-      parent.children.push({
-        id: createId(),
-        title: 'New Page',
-        pageBlocks: [],
-        children: [],
-      });
+      if (!parent) return;
+      parent.children.push(createPage());
     },
 
     addSiblingPage(state, action: PayloadAction<{ path: string[] }>) {
@@ -24,12 +27,9 @@ export const pagesSlice = createSlice({
       const parentPath = action.payload.path.slice(0, -1);
       const parent = getNodeByPath(state.root, parentPath);
 
-      parent.children.push({
-        id: createId(),
-        title: 'New Page',
-        pageBlocks: [],
-        children: [],
-      });
+      if (!parent) return;
+
+      parent.children.push(createPage());
     },
 
     deletePage(state, action: PayloadAction<{ path: string[] }>) {
@@ -38,7 +38,7 @@ export const pagesSlice = createSlice({
         action.payload.path
       );
 
-      if (!childId) return;
+      if (!parent || !childId) return;
 
       parent.children = parent.children.filter(child => child.id !== childId);
     },
@@ -48,15 +48,17 @@ export const pagesSlice = createSlice({
       action: PayloadAction<{ path: string[]; title: string }>
     ) {
       const node = getNodeByPath(state.root, action.payload.path);
-      node.title = action.payload.title;
-    },
 
-    setActivePath(state, action: PayloadAction<string[]>) {
-      state.activePath = action.payload;
+      if (!node) return;
+
+      node.title = action.payload.title;
     },
 
     addBlock(state, action: PayloadAction<{ path: string[] }>) {
       const node = getNodeByPath(state.root, action.payload.path);
+
+      if (!node) return;
+
       node.pageBlocks.push({ title: 'New Block', id: createId() });
     },
 
@@ -65,6 +67,9 @@ export const pagesSlice = createSlice({
       action: PayloadAction<{ path: string[]; blockId: string }>
     ) {
       const node = getNodeByPath(state.root, action.payload.path);
+
+      if (!node) return;
+
       node.pageBlocks = node.pageBlocks.filter(
         b => b.id !== action.payload.blockId
       );
@@ -168,6 +173,9 @@ export const pagesSlice = createSlice({
       // Clear drag-and-drop state
       state.dnd = undefined;
     },
+    dragEndBlock(state) {
+      state.dnd = undefined;
+    },
   },
 });
 
@@ -179,9 +187,9 @@ export const {
   addBlock,
   deleteBlock,
   changeBlockTitle,
-  setActivePath,
   dragStartBlock,
   dropBlock,
+  dragEndBlock,
 } = pagesSlice.actions;
 
 export default pagesSlice.reducer;

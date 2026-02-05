@@ -3,7 +3,6 @@ import { createId } from './utils.ts';
 import type { PagesState } from './types.ts';
 
 export const initialState: PagesState = {
-  activePath: [],
   root: {
     title: 'Main',
     id: createId(),
